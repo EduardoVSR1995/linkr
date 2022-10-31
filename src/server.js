@@ -9,6 +9,9 @@ import likesRout from "./routers/likes.routers.js";
 import userPostsRouter from "./routers/userPostsRouter.js";
 import userInfoRouter from './routers/userInfoRouter.js';
 import routeGetUsersHeader from './routers/headerGetFilteredUsers.js';
+import commentRouter from "./routers/commentRouter.js";
+import followRouter from "./routers/followsRout.js";
+import shareRout from './routers/sharesRouter.js'
 
 dotenv.config();
 
@@ -30,7 +33,12 @@ server.use(userInfoRouter);
 
 server.use(routeGetUsersHeader);
 
-// server.use(routeGetUsersHeader);
+server.use(commentRouter);
+
+server.use(followRouter)
+
+server.use(shareRout)
+
 
 server.listen(process.env.PORT, () => {
   console.log("Servidor rodando na porta " + process.env.PORT);
