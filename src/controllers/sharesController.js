@@ -19,6 +19,8 @@ export async function shares(req,res){
 
         res.send({cont:i}).status(200)
     
+
+        
     } catch (error) {
         res.sendStatus(400)
         
