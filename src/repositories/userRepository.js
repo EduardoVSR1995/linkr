@@ -18,6 +18,18 @@ export async function insert({localItens , iten}){
       }
 }
 
+export async function getItemFollow({userId, following }){
+  try {
+            const {rows} = await connection.query(`SELECT * FROM followers WHERE followers."userId"= $1 AND followers.following= $2;`,[userId,following ])
+            
+            return rows;
+        
+    } catch (error) {
+      return error;
+    }
+}
+
+
 export async function getItem({table , categori, iten}){
   try {
             const {rows} = await connection.query(`SELECT * FROM ${table} WHERE ${categori}=${iten} ;`)
@@ -56,7 +68,39 @@ export async function updateIten({table ,colun ,value, id}){
       return error;    
     }
   }
-  
+
+  export async function deleteShare({id ,userId}){
+
+    try {
+      
+      const {rows} = await connection.query(`DELETE FROM shares WHERE id= $1 AND "userId"=$2 ;`, [ id, userId ])
+      
+      return rows;
+      
+    } catch (error) {
+      
+      return error;    
+    }
+  }
+
+
+
+  export async function deleteFollow({userId ,following}){
+
+    try {
+      
+      const {rows} = await connection.query(`DELETE FROM followers WHERE "userId"= $1 AND following=$2 ;`, [ userId, following ])
+      
+      return rows;
+      
+    } catch (error) {
+      
+      return error;    
+    }
+  }
+
+
+
 export async function deleteLike({userId ,linkId}){
 
     try {
@@ -95,19 +139,20 @@ export async function linksUser({id}){
       return rows;
     }
     const {rows} = await connection.query(`
-        SELECT
-          users.id AS "IDuser",
-          links.id,
-          users."userName",
-          likes."createDate"
-        FROM likes
-          JOIN links
-            ON links.id = likes."linkId"
-          JOIN users
-            ON likes."userId" = users.id
-            GROUP BY users."userName", likes."createDate",links.id,users.id
-        ORDER BY "createDate" DESC
-        ; `)
+    SELECT
+    COUNT(likes) AS "likes",
+    links.id,
+    users."userName",
+    links."createDate"
+  FROM likes
+    JOIN links
+      ON links.id = likes."linkId"
+    JOIN users
+      ON likes."userId" = users.id
+      GROUP BY users."userName",links."createDate",links.id
+  ORDER BY links."createDate" DESC
+  LIMIT 20
+ ;`)
         return rows
   
     } catch (error) {
