@@ -10,7 +10,6 @@ async function postLinks(req, res) {
     link.text = null;
   }
   try {
-    
     await connection.query(
       `
         INSERT INTO links ("userId", url, text)
@@ -169,7 +168,6 @@ async function deleteLink(req, res) {
             `,
       [id]
     );
-
     res.sendStatus(200);
   } catch (error) {
     res.status(500).send(error.message);
