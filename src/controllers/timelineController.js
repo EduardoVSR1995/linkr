@@ -47,7 +47,7 @@ async function getLinks(req, res) {
         LEFT JOIN shares
           ON links.id = shares."linkId"
       LEFT JOIN followers
-          ON followers.following = users.id 
+          ON followers.following = users.id
       WHERE followers."userId" = $1 OR users.id=$2
         GROUP BY
         links.repost,
@@ -71,30 +71,30 @@ async function getLinks(req, res) {
     SELECT
     users."userName",
     users."pictureUrl",
-    users.id AS "userId",
+    users.id AS "originId",
     links.id,
     links.url,
     links.text,
     links."createDate",
-    users."userName" AS "origShar",
+    users."userName" AS "origShar" ,
     i."pictureUrl",
     i.id AS "userId",
-    i."userName",
+    i."userName" ,
     shares.id AS "shareId"
         FROM followers
         JOIN users
             ON users.id = followers.following
         JOIN shares
-            ON users.id= shares."RepostId"
+            ON followers.following = shares."userId"
         LEFT JOIN links
             ON shares."linkId" = links.id
         LEFT JOIN users i
-            ON i.id = shares."userId"
-       
+            ON i.id = shares."RepostId" 
         WHERE followers."userId" = $1 OR users.id= $2
     
             ORDER BY "createDate" DESC
             LIMIT 20;
+
             `,[user.userId,user.userId])
 
 
