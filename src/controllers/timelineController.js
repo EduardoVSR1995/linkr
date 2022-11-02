@@ -103,10 +103,28 @@ async function getLinks(req, res) {
       return value;
     });
 
+    // console.log(links)
+    // console.log(link2)
+    // console.log(link3.rows)
+    // console.log(rows)
+
+    for (let i = 0; i < link3.rows.length; i++) {
+      let c = 0;
+      for (let r = 0; r < link2.length; r++) {
+        if(link3.rows[i].id === link2[r].id){
+        c += link2[r].likes !=='0' ? Number(link2[r].likes) : 0
+        link3.rows[i].likes = c
+        }
+      }
+    }
+   //console.log(link3.rows)
+
     for (let index = 0; index < rows.length; index++) {
       rows[index]["likeUser"] = [];
       for (let i = 0; i < link3.rows.length; i++) {
-        link3.rows[i]["likeUser"] = []
+
+        link3.rows[i]["likeUser"] = []  
+
         if(Date.parse(link3.rows[i].createDate)<=Date.parse(rows[index].createDate) ){
           rows.splice(index,0,link3.rows[i])
         }else{
@@ -121,13 +139,17 @@ async function getLinks(req, res) {
           rows[index]["boolean"] = true;
         }
       }
+      let c = 0;
       for (let i = 0; i < link2.length; i++) {
         if (rows[index].id === link2[i].id) {
-          rows[index]['likes']=link2[i].likes
-          rows[index].likeUser.push(link2[i].userName);
+          c += link2[i].likes !=='0' ? Number(link2[i].likes) : 0
+          link2[i].userName !== null ? rows[index].likeUser.push(link2[i].userName): '';
+          rows[index].likes = c
         }
+          
       }
     }
+console.log(rows , link2)
 
     res.status(200).send(rows);
   } catch (error) {
