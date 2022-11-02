@@ -140,19 +140,28 @@ export async function linksUser({id}){
     }
     const {rows} = await connection.query(`
     SELECT
-    COUNT(likes) AS "likes",
-    links.id,
+    COUNT(likes.id) AS "likes",
     users."userName",
+    links.id,
     links."createDate"
-  FROM likes
-    JOIN links
+  FROM links
+    LEFT JOIN likes
       ON links.id = likes."linkId"
-    JOIN users
-      ON likes."userId" = users.id
-      GROUP BY users."userName",links."createDate",links.id
+    LEFT JOIN users
+      ON users.id = likes."userId"
+      
+      
+      GROUP BY
+          users."userName",
+
+        links."createDate",
+        links.id
+  
   ORDER BY links."createDate" DESC
   LIMIT 20
  ;`)
+
+
         return rows
   
     } catch (error) {
