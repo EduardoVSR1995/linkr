@@ -69,17 +69,15 @@ async function getLinks(req, res) {
 
     const link3 = await connection.query(`
     SELECT
-    users."userName",
     users."pictureUrl",
     users.id AS "originId",
     links.id,
     links.url,
     links.text,
     links."createDate",
-    users."userName" AS "origShar" ,
-    i."pictureUrl",
+    users."userName"  ,
     i.id AS "userId",
-    i."userName" ,
+    i."userName" AS "origShar" ,
     shares.id AS "shareId"
         FROM followers
         JOIN users
@@ -149,7 +147,7 @@ async function getLinks(req, res) {
           
       }
     }
-console.log(rows , link2)
+// console.log(rows , link2)
 
     res.status(200).send(rows);
   } catch (error) {
@@ -184,6 +182,13 @@ async function deleteLink(req, res) {
   );  
   
   await connection.query(
+    `
+          DELETE FROM likes
+          WHERE  "linkId"= $1
+          `,
+    [id]
+  );
+  await connection.query(
       `
             DELETE FROM links
             WHERE id = $1
@@ -192,6 +197,7 @@ async function deleteLink(req, res) {
     );
     res.sendStatus(200);
   } catch (error) {
+    console.log(error)
     res.status(500).send(error.message);
   }
 }
