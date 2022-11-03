@@ -166,28 +166,34 @@ async function deleteLink(req, res) {
     categori: "token",
     iten: `'${token}'`,
   });
+  const rows1 = await userRepository.getItem({
+    table: "likes",
+    categori: "linkId",
+    iten: `'${id}'`,
+  });
+  const rows2 = await userRepository.getItem({
+    table: "likes",
+    categori: "linkId",
+    iten: `'${id}'`,
+  });
+  const rows3 = await userRepository.getItem({
+    table: "trendingLinks",
+    categori: "linkId",
+    iten: `'${id}'`,
+  });
 
   
   if (!rows) {
     return res.status(401).send("Sessão não encontrada, favor relogar.");
   }
   
-  await connection.query(
-    `
-          DELETE FROM shares
-          WHERE "linkId" = $1
-          
-          `,
-    [id]
-  );  
+  if(rows1.length>0)await connection.query(`DELETE FROM shares WHERE "linkId" = $1 `,[id]);  
   
-  await connection.query(
-    `
-          DELETE FROM likes
-          WHERE  "linkId"= $1
-          `,
-    [id]
-  );
+  if(rows2.length>0)await connection.query(`DELETE FROM likes WHERE  "linkId"= $1`,[id]);
+  
+  if(rows3.length>0)await connection.query(`DELETE FROM "trendingLinks" WHERE  "linkId"= $1`,[id]);
+  
+
   await connection.query(
       `
             DELETE FROM links
