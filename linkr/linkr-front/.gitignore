@@ -3,7 +3,6 @@
 # dependencies
 /node_modules
 /.pnp
-linkr_server
 .pnp.js
 
 # testing
@@ -14,7 +13,6 @@ linkr_server
 
 # misc
 .DS_Store
-.env
 .env.local
 .env.development.local
 .env.test.local

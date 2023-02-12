@@ -23,8 +23,6 @@ export async function signUp(req, res) {
   const { name, email, pictureUrl, password } = req.body;
 
   const encrypt = bcrypt.hashSync(password, 10);
-
-  // console.log(req, res)
   try {
     await userRepository.insert({
       localItens: `users("userName", email, "pictureUrl", "passwordHash" )`,
@@ -39,7 +37,7 @@ export async function signUp(req, res) {
 
 export async function signValid(req, res) {
   const obj = res.localItens;
-
+  
   try {
     const rows = await userRepository.getItem({
       table: `users`,

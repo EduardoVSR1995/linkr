@@ -69,15 +69,17 @@ async function getLinks(req, res) {
 
     const link3 = await connection.query(`
     SELECT
+    users."userName",
     users."pictureUrl",
     users.id AS "originId",
     links.id,
     links.url,
     links.text,
     links."createDate",
-    users."userName"  ,
+    users."userName" AS "origShar" ,
+    i."pictureUrl",
     i.id AS "userId",
-    i."userName" AS "origShar" ,
+    i."userName" ,
     shares.id AS "shareId"
         FROM followers
         JOIN users
@@ -101,11 +103,6 @@ async function getLinks(req, res) {
       return value;
     });
 
-    // console.log(links)
-    // console.log(link2)
-    // console.log(link3.rows)
-    // console.log(rows)
-
     for (let i = 0; i < link3.rows.length; i++) {
       let c = 0;
       for (let r = 0; r < link2.length; r++) {
@@ -115,7 +112,6 @@ async function getLinks(req, res) {
         }
       }
     }
-   //console.log(link3.rows)
 
     for (let index = 0; index < rows.length; index++) {
       rows[index]["likeUser"] = [];
@@ -147,7 +143,6 @@ async function getLinks(req, res) {
           
       }
     }
-// console.log(rows , link2)
 
     res.status(200).send(rows);
   } catch (error) {
@@ -166,34 +161,21 @@ async function deleteLink(req, res) {
     categori: "token",
     iten: `'${token}'`,
   });
-  const rows1 = await userRepository.getItem({
-    table: "likes",
-    categori: "linkId",
-    iten: `'${id}'`,
-  });
-  const rows2 = await userRepository.getItem({
-    table: "likes",
-    categori: "linkId",
-    iten: `'${id}'`,
-  });
-  const rows3 = await userRepository.getItem({
-    table: "trendingLinks",
-    categori: "linkId",
-    iten: `'${id}'`,
-  });
 
   
   if (!rows) {
     return res.status(401).send("Sessão não encontrada, favor relogar.");
   }
   
-  if(rows1.length>0)await connection.query(`DELETE FROM shares WHERE "linkId" = $1 `,[id]);  
+  await connection.query(
+    `
+          DELETE FROM shares
+          WHERE "linkId" = $1
+          
+          `,
+    [id]
+  );  
   
-  if(rows2.length>0)await connection.query(`DELETE FROM likes WHERE  "linkId"= $1`,[id]);
-  
-  if(rows3.length>0)await connection.query(`DELETE FROM "trendingLinks" WHERE  "linkId"= $1`,[id]);
-  
-
   await connection.query(
       `
             DELETE FROM links
@@ -203,7 +185,6 @@ async function deleteLink(req, res) {
     );
     res.sendStatus(200);
   } catch (error) {
-    console.log(error)
     res.status(500).send(error.message);
   }
 }

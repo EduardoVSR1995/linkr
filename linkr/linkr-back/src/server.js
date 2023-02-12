@@ -16,6 +16,7 @@ import shareRout from './routers/sharesRouter.js'
 dotenv.config();
 
 const server = express();
+
 server.use(json());
 server.use(cors());
 
@@ -41,5 +42,5 @@ server.use(shareRout)
 
 
 server.listen(process.env.PORT, () => {
-  console.log("Servidor rodando na porta " + process.env.PORT);
+  console.log("Server running!!");
 });

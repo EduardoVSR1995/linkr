@@ -33,7 +33,6 @@ export async function getItemFollow({userId, following }){
 export async function getItem({table , categori, iten}){
   try {
             const {rows} = await connection.query(`SELECT * FROM ${table} WHERE ${categori}=${iten} ;`)
-            
             return rows;
         
     } catch (error) {
