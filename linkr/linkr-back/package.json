@@ -7,8 +7,7 @@
   "scripts": {
     "start": "node src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node src/IncertDataBase.js && npx nodemon server.js",
-    "docker:up": "docker-compose up --build"
+    "dev": "node src/IncertDataBase.js && npx nodemon server.js"
   },
   "keywords": [],
   "author": "",

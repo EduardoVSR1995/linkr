@@ -32,7 +32,7 @@ services:
     depends_on:
       - ${POSTGRES_IMAGE_DB_DOCKER}
     volumes: 
-    - ./linkr/linkr-back:/usr/src
+    - ./linker/linkr_server:/usr/src
     - /usr/src/node_modules
     entrypoint: dockerize -wait tcp://${POSTGRES_IMAGE_DB_DOCKER}:5432 -timeout 20s docker-entrypoint.sh
     command: "npm run dev"

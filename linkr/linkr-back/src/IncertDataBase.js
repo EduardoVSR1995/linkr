@@ -7,10 +7,15 @@ dotenv.config();
 
 const connection = new Pool ({
   connectionString: process.env.DATABASE_URL
-}); 
-
+});   
+  
 export default async function IncertDataBase() {
     try {
+        await connection.query(`SELECT * FROM users`);
+        console.log("This relationship already exists!");
+        console.log("Access from phone with ip address in address bar "+address);
+        return;
+    } catch (e) {
         await connection.query(`
         CREATE TABLE "users"(
             "id"            SERIAL PRIMARY KEY,
@@ -19,8 +24,8 @@ export default async function IncertDataBase() {
             "passwordHash"  TEXT NOT NULL,
             "pictureUrl"    TEXT NOT NULL, 
             "createDate"    TIMESTAMP DEFAULT NOW() NOT NULL
-                );
-                
+            );
+            
         CREATE TABLE "links"(
             "id"            SERIAL PRIMARY KEY,
             "userId"        INTEGER REFERENCES "users"("id") NOT NULL,
@@ -51,14 +56,14 @@ export default async function IncertDataBase() {
             "active"        BOOLEAN DEFAULT TRUE NOT NULL,
             "createDate"    TIMESTAMP DEFAULT NOW() NOT NULL,
             "logoutDate"    TIMESTAMP 
-        );
-        
-        CREATE TABLE "likes"(
-            "id"            SERIAL PRIMARY KEY,
-            "linkId"        INTEGER REFERENCES "links"("id") NOT NULL,
-            "userId"        INTEGER REFERENCES "users"("id") NOT NULL,
-            "createDate"    TIMESTAMP DEFAULT NOW() NOT NULL 
             );
+            
+            CREATE TABLE "likes"(
+                "id"            SERIAL PRIMARY KEY,
+                "linkId"        INTEGER REFERENCES "links"("id") NOT NULL,
+                "userId"        INTEGER REFERENCES "users"("id") NOT NULL,
+                "createDate"    TIMESTAMP DEFAULT NOW() NOT NULL 
+                );
             
             CREATE TABLE "comments"(
             "id"            SERIAL PRIMARY KEY,
@@ -74,21 +79,18 @@ export default async function IncertDataBase() {
             "userId"        INTEGER REFERENCES "users"("id") NOT NULL,
             "RepostId"      INTEGER REFERENCES "users"("id") NOT NULL,
             "createDate"    TIMESTAMP DEFAULT NOW() NOT NULL
-        );
-        
-        CREATE TABLE "followers"(
+            );
+            
+            CREATE TABLE "followers"(
             "id"            SERIAL PRIMARY KEY,
             "userId"        INTEGER REFERENCES "users"("id") NOT NULL,
             "following"     INTEGER REFERENCES "users"("id") NOT NULL,
             "createDate"    TIMESTAMP DEFAULT NOW() NOT NULL 
-        );
-      `);
-      console.log("All ready!!");
-      return;
-    } catch (error) {
-      console.log("This relationship already exists!");
-      return;
+            );
+            `);
+            
+            console.log("All ready!!");
+        }
     }
-}
-
+    
 IncertDataBase();
